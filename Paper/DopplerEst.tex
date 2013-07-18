@@ -1,0 +1,148 @@
+\documentclass[journal,draftcls,onecolumn,twoside]{IEEEtran}
+
+\usepackage[tight,footnotesize]{subfigure}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{cite}
+
+% correct bad hyphenation here
+%\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{Simple Doppler Estimation for MIMO Radar with Co-Located Antennas}
+
+%\author{John~Lipor,
+%        Sajid~Ahmed,~\IEEEmembership{Member,~IEEE},
+%        and~Mohamed-Slim~Alouini,~\IEEEmembership{Fellow,~IEEE}\\
+%        \IEEEauthorblockA{Computer, Electrical and Mathematical Sciences and Engineering (CEMSE) Division, \\ King Abdullah University of Science and Technology (KAUST),\\ Thuwal, Makkah Province, Saudi Arabia}
+%}
+
+%\markboth{IEEE Transactions on Aerospace and Electronic Systems, Vol. XX, No. X, MONTH 2012}{Lipor \MakeLowercase{\textit{et al.}}: Receive Beampattern Matching for MIMO Radar}
+
+% make the title area
+\maketitle
+
+
+%\begin{abstract}
+%Abstract
+%\end{abstract}
+%
+%\begin{IEEEkeywords}
+%Keywords
+%\end{IEEEkeywords}
+%
+%\IEEEpeerreviewmaketitle
+%
+%\section{Introduction}
+%\label{sec:Introduction}
+%
+%\PARstart{I}{ntroduction}
+%
+\section{Problem Formulation}
+\label{sec:Problem Fromulation}
+
+Consider a MIMO radar system in which there are $N_{T}$ transmit antennas and $N_{R}$ receive antennas, with interelement spacing $d$ and transmission wavelength $\lambda$. The received signal at antenna $p$ and time index $n$ due to a moving target located at angle $\theta$ with complex reflection coefficient $\beta(\theta)$ can be written as
+\begin{equation}
+y_{p}(n) = \beta(\theta)e^{j \frac{2(p-1)\pi d}{\lambda} \mathrm{sin}(\theta)}e^{j2\pi f_{D}n} \sum_{q = 1}^{N_{t}}x_{q}(n)e^{j \frac{2(q-1)\pi d}{\lambda} \mathrm{sin}(\theta)} + w_{p}(n),
+\end{equation}
+where $f_{D}$ represents the resulting doppler shift caused by the moving target, $x_{q}(n)$ represents the baseband signal transmitted from antenna $q$, and $w_{p}(n)$ is circularly symmetric white Gaussian noise. Assuming the transmitted probing signals are narrowband and that the propagation is nondispersive, the received baseband data vector due to a target at location $\theta$ can be described by
+\begin{equation}
+\mathbf{y}(n) = \beta(\theta)\mathbf{a}_{R}(\theta)\mathbf{a}_{T}^{T}(\theta)\mathbf{x}(n)e^{j2\pi f_{D}n} + \mathbf{w}(n),
+\end{equation}
+where
+\begin{equation}
+\mathbf{y}(n) = \begin{bmatrix}y_{1}(n) & y_{2}(n) & ... & y_{N_{R}}(n)\end{bmatrix}^T,
+\end{equation}
+\begin{equation}
+\mathbf{x}(n) = \begin{bmatrix}x_{1}(n) & x_{2}(n) & ... & x_{N_{T}}(n)\end{bmatrix}^T,
+\end{equation}
+and
+\begin{equation}
+\mathbf{w}(n) = \begin{bmatrix}w_{1}(n) & w_{2}(n) & ... & w_{N_{R}}(n)\end{bmatrix}^T,
+\end{equation}
+while
+\begin{equation}
+\mathbf{a}_{T}(\theta) = \begin{bmatrix}
+1 & e^{j \frac{2\pi d}{\lambda} \mathrm{sin}(\theta)} & ... & e^{j \frac{2(N_{T}-1)\pi d}{\lambda} \mathrm{sin}(\theta)}
+\end{bmatrix}^{T}
+\end{equation}
+and
+\begin{equation}
+\mathbf{a}_{R}(\theta) = \begin{bmatrix}
+1 & e^{j \frac{2\pi d}{\lambda} \mathrm{sin}(\theta)} & ... & e^{j \frac{2(N_{R}-1)\pi d}{\lambda} \mathrm{sin}(\theta)}
+\end{bmatrix}^{T}
+\end{equation}
+represent the transmit and receive steering vectors, and $(\cdot)^{T}$ denotes the transpose. The total $N$ samples can be collected into a single matrix
+\begin{equation}
+\mathbf{Y} = \beta(\theta)\mathbf{A}(\theta)\mathbf{X}\mathbf{D}(f_{D}) + \mathbf{W},
+\end{equation}
+where
+\begin{equation}
+\mathbf{A}(\theta) = \mathbf{a}_{R}(\theta)\mathbf{a}_{T}^{T}(\theta),
+\end{equation}
+\begin{equation}
+\mathbf{X} = \begin{bmatrix}\mathbf{x}(0) & \mathbf{x}(1) & ... & \mathbf{x}(N-1)\end{bmatrix},
+\end{equation}
+$\mathbf{D}(f_{D})$ is the $N \times N$ diagonal matrix whose main diagonal elements consist of the doppler shifts $e^{j2\pi f_{D}(0:N-1)}$, and $\mathbf{W}$ is the $N_{R} \times N$ noise matrix. Let the vector of unknown variables be $\mathbf{\psi} = [\theta \; f_{D}]^{T}$. We vectorize $\mathbf{Y}$ by stacking its columns on top of one another in order to create the received data vector $\mathbf{y}$. Assuming $\mathbf{W}$ has covariance matrix $\mathbf{C_{W}} = \sigma_w^{2}\mathbf{I}$, where $\mathbf{I}$ denotes the identity matrix of corresponding dimension, the received signal follows a Gaussian probability density function (pdf) with mean $\mathbf{\mu}(\mathbf{\psi}) = \mathrm{vec}(\beta(\theta)\mathbf{A}(\theta)\mathbf{X}\mathbf{D}(f_{D}))$ and covariance matrix $\mathbf{C_{y}} = \sigma_w^{2}\mathbf{I}$. Let
+\begin{equation}
+\mathbf{v}(\mathbf{\psi}) = \mathrm{vec}(\beta(\theta)\mathbf{A}(\theta)\mathbf{X}\mathbf{D}(f_{D})).
+\end{equation}
+The log-likelihood function can then be written as
+\begin{equation}
+\Lambda(\mathbf{\psi}) = C - \frac{\sigma_{w}^{2}}{2}\left(\mathbf{y}^{H}\mathbf{y} - \mathbf{y}^{H}\mathbf{v}(\theta,f_{D}) - \mathbf{v}(\theta,f_{D})^{H}\mathbf{y} + \mathbf{v}(\theta,f_{D})^{H}\mathbf{v}(\theta,f_{D})\right),
+\end{equation}
+where $C$ is some constant that does not depend on $\mathbf{\psi}$.
+To find the maximum likelihood (ML) estimate, the log-likelihood function must be maximized with respect to $\mathbf{\psi}$.
+\begin{equation}
+\hat{\mathbf{\psi}} = \mathrm{arg} \; \underset{\mathbf{\psi}}{\mathrm{max}} \; \Lambda(\mathbf{\psi}) = \mathrm{arg} \; \underset{\mathbf{\psi}}{\mathrm{min}} \; \mathbf{y}^{H}\mathbf{y} - \mathbf{y}^{H}\mathbf{v}(\theta,f_{D}) - \mathbf{v}(\theta,f_{D})^{H}\mathbf{y} + \mathbf{v}(\theta,f_{D})^{H}\mathbf{v}(\theta,f_{D}).
+\end{equation}
+The first term in the equation does not depend on $\mathbf{\psi}$. The final term is constant with respect to $f_{D}$ and $\theta$ (see Appendix 1 for proof). Thus the estimation simplifies to
+\begin{equation}
+\hat{\mathbf{\psi}} = \mathrm{arg} \; \underset{\mathbf{\psi}}{\mathrm{max}} \; \mathbf{y}^{H}\mathbf{v}(\theta,f_{D}) + \mathbf{v}(\theta,f_{D})^{H}\mathbf{y}.
+\end{equation}
+The above estimator requires a two-dimensional search over $\theta$ and $f_{D}$.
+
+\section{Simulation Results}
+\label{sec:Simulation Results}
+
+Simulation results are shown for a uniform linear array with $N_{T} = N_{R} = 10$ antennas and half-wavelenth interelement spacing at both the transmit and receive side. The angular search is performed over a linear meshgrid of 181 points and the frequency search is performed over a linear meshgrid of 101 points. The frequency is normalized to be between -0.5 and 0.5. Two targets with reflection coefficients equal to unity are placed at $30^{\circ}$ and $-55^{\circ}$, with $f_{D} = -0.1$ and $f_{D} = 0.3$, respectively. Zero-mean circularly symmetric white Gaussian noise with variance $\sigma_{w}^{2} = 0.1$ is added to the received signal. Fig. \ref{fig:1} shows a mesh plot of the magnitude of the resulting location and frequency estimates with data markers placed at the local maxima, where X corresponds to frequency and Y corresponds to location angle. In both cases, the estimator performs perfectly.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=7in]{Figures/lipor1.eps}
+\caption{Location and frequency estimates for two targets where X corresponds to the doppler frequency and Y corresponds to the location angle.}
+\label{fig:1}
+\end{figure}
+
+\section{Appendix 1}
+\label{sec:Appendix 1}
+
+Proof of independence of $f_{D},\theta$ for $\mathbf{v}(\theta,f_{D})^{H}\mathbf{v}(\theta,f_{D})$.
+
+Without any loss of generality, $\beta(\theta)$ is assumed to be unity for compactness. We begin by using the property $\mathrm{vec}(\mathbf{A}\mathbf{X}\mathbf{B}) = (\mathbf{B}^{T} \otimes \mathbf{A})\mathrm{vec}(\mathbf{X})$ to rewrite the term as
+\begin{eqnarray}
+\mathbf{v}(\theta,f_{D})^{H}\mathbf{v}(\theta,f_{D}) & = & \mathrm{vec}(\beta(\theta)\mathbf{A}(\theta)\mathbf{X}\mathbf{D}(f_{D}))^{H}\mathrm{vec}(\beta(\theta)\mathbf{A}(\theta)\mathbf{X}\mathbf{D}(f_{D})) \\
+& = & \left[(\mathbf{D}(f_{D}) \otimes \mathbf{A}(\theta))\mathrm{vec}(\mathbf{X})\right]^{H}\left[(\mathbf{D}(f_{D}) \otimes \mathbf{A}(\theta))\mathrm{vec}(\mathbf{X})\right] \\
+& = & \mathrm{vec}(\mathbf{X})^{H}(\mathbf{D}^{*}(f_{D}) \otimes \mathbf{A}^{H}(\theta))(\mathbf{D}^{T}(f_{D}) \otimes \mathbf{A}(\theta))\mathrm{vec}(\mathbf{X}) \\
+& = & \mathrm{vec}(\mathbf{X})^{H}\left[(\mathbf{D}^{*}(f_{D}) \mathbf{D}^{T}(f_{D})) \otimes (\mathbf{A}^{H}(\theta) \mathbf{A}(\theta))\right]\mathrm{vec}(\mathbf{X}) \\
+& = & \mathrm{vec}(\mathbf{X})^{H}\left[I_{N \times N} \otimes (\mathbf{A}^{H}(\theta) \mathbf{A}(\theta))\right]\mathrm{vec}(\mathbf{X}).
+\end{eqnarray}
+As seen above, the frequency term cancels otu completely. Let $\tilde{\mathbf{A}}(\theta) = \mathbf{A}^{H}(\theta)\mathbf{A}(\theta)$. It can be easily shown that the diagonal elements of $\tilde{\mathbf{A}}(\theta)$ are constants equal to $N_{T}$. Note that due to the orthogonal signaling, we have $\mathbf{E}\left\lbrace x_{ij}^{*}x_{kl}\right\rbrace = 1$ for $i = k$ and $j = l$, and zero otherwise. Expansion of the above product under expectation yields zeros everywhere except at the diagonal elements of $\tilde{\mathbf{A}}(\theta)$. The resulting product is therefore a constant equal to $N_{T}^{2} \times N$.
+
+%\section{Conclusion}
+%\label{sec:Conclusion}
+%
+%Conclusion
+
+%\bibliographystyle{IEEEtranBST/IEEEtran}
+%\bibliography{IEEEtranBST/IEEEabrv,Bibliography}
+
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+\end{document}
